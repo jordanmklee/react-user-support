@@ -12,13 +12,26 @@ class Controls extends React.Component{
 				
 				<ul className="buttonContainer" style={{float:"right"}}>
 					<li>
-						<Button variant="contained" color="primary">ADD</Button>
+						<Button
+							variant="contained"
+							color="primary">
+							ADD
+						</Button>
 					</li>
 					<li>
-						<Button variant="contained" color="secondary">DELETE</Button>
+						<Button
+							variant="contained"
+							color="secondary">
+							DELETE
+						</Button>
 					</li>
 					<li>
-						<Button variant="outlined" color="default">EDIT</Button>
+						<Button
+							variant="outlined"
+							color="default"
+							onClick={this.props.onEditClick}>
+								{this.props.editMode ? "CANCEL" : "EDIT"}
+						</Button>
 					</li>
 				</ul>
 			</div>

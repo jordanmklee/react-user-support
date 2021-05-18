@@ -1,4 +1,6 @@
 import React from "react";
+import Controls from "./Controls";
+
 import PropTypes from 'prop-types';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -13,7 +15,8 @@ import axios from "axios";
 
 class Grid extends React.Component{
 	state = {
-		records: []
+		records: [],
+		editMode: false
 	};
 
 	componentDidMount(){
@@ -32,19 +35,29 @@ class Grid extends React.Component{
 						createdBy: record.createdBy,
 						modifiedBy: record.modifiedBy,
 					});
-					this.setState({records: newState});
-					
+
+					this.setState({records: newState});					
 				})
 			})
+	}
+
+	handleEditClick = () => {
+		var toggle = !this.state.editMode;
+		this.setState({editMode: toggle})
 	}
 
 	render(){
 		return(
 			<>
+				<Controls
+					editMode={this.state.editMode}
+					onEditClick={this.handleEditClick}
+				/>
 				<table style={{"width":"100%"}}>
 					<GridHeader/>
 					<RecordList
 						records={this.state.records}
+						editMode={this.state.editMode}
 				/>
 				</table>
 				<GridPagination
@@ -95,6 +108,7 @@ class RecordList extends React.Component{
 					dateModified={record.dateModified}
 					createdBy={record.createdBy}
 					modifiedBy={record.modifiedBy}
+					editMode={this.props.editMode}
 				/>
 			)
 		})
@@ -107,28 +121,28 @@ class RecordList extends React.Component{
 	}
 }
 RecordList.propTypes = {
-	isSelected: PropTypes.bool
+	isSelected: PropTypes.bool,
+	editMode: PropTypes.bool,
 }
 
 
 
 class RecordItem extends React.Component{	
 	render(){
-		const editMode = false;	// TODO this needs to update based on EDIT button
 		const isSelected = this.props.isSelected;
 
 		return(
 			<tr>
-				<td><Checkbox checked={isSelected}></Checkbox></td> 
+				<td><Checkbox></Checkbox></td> 
 				<td><Button variant="outlined"><CreateIcon fontSize="small"/></Button></td>
 				<td>{this.props.id}</td>
-				{editMode
+				{this.props.editMode
 					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.screenName}/></td> 
 					: <td>{this.props.screenName}</td>}
-				{editMode
+				{this.props.editMode
 					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
-				{editMode
+				{this.props.editMode
 					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.recordStatus}/></td>
 					: <td>{this.props.recordStatus}</td>}
 				<td>{this.props.dateCreated}</td>
