@@ -27,6 +27,7 @@ class Grid extends React.Component{
 				res.data.data.forEach(record => {
 					newState = newState.concat({
 						key: uuidv4(),
+						uniqueId: uuidv4(),
 						isSelected: false,
 						id: record.userId,
 						screenName: record.screenName,
@@ -45,7 +46,7 @@ class Grid extends React.Component{
 	handleDeleteClick = () => {
 		this.state.records.forEach(record => {
 			if(record.isSelected)
-				console.log(record.id + " is selected");
+				console.log("TODO delete: " + record);
 		})
 	}
 
@@ -54,8 +55,34 @@ class Grid extends React.Component{
 		this.setState({editMode: toggle})
 	}
 
-	handleCheck = (uid) => {
-		console.log("asd");
+	handleCheck = (item) => {
+		console.log(item.props.uniqueId);
+
+		var newStateRecords = [];
+
+		this.state.records.forEach(record => {
+			if(record.uniqueId === item.props.uniqueId){
+				var toggledSelect = !record.isSelected;
+				newStateRecords = newStateRecords.concat({
+						key: record.key,
+						uniqueId: record.uniqueId,
+						isSelected: toggledSelect,
+						id: record.userId,
+						screenName: record.screenName,
+						description: record.description,
+						recordStatus: record.recordStatus,
+						dateCreated: record.dateCreated,
+						dateModified: record.dateModified,
+						createdBy: record.createdBy,
+						modifiedBy: record.modifiedBy,
+				})
+			}
+			else{
+				newStateRecords = newStateRecords.concat(record);
+			}
+			this.setState({records: newStateRecords})
+		})
+
 	}
 
 	render(){
@@ -113,6 +140,7 @@ class RecordList extends React.Component{
 			return(
 				<RecordItem
 					key={record.key}
+					uniqueId={record.uniqueId}
 					isSelected={record.isSelected}
 					id={record.id}
 					screenName={record.screenName}
@@ -145,10 +173,8 @@ RecordList.propTypes = {
 
 class RecordItem extends React.Component{
 	render(){
-		const isSelected = this.props.isSelected;
-
 		const handleCheckClick = () => {
-			this.props.onCheckChange();
+			this.props.onCheckChange(this);
 		}
 
 		return(
