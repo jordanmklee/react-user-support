@@ -21,7 +21,8 @@ class Controls extends React.Component{
 					<li>
 						<Button
 							variant="contained"
-							color="secondary">
+							color="secondary"
+							onClick={this.props.onDeleteClick}>
 							DELETE
 						</Button>
 					</li>
@@ -30,7 +31,7 @@ class Controls extends React.Component{
 							variant="outlined"
 							color="default"
 							onClick={this.props.onEditClick}>
-								{this.props.editMode ? "CANCEL" : "EDIT"}
+								{this.props.editMode ? "SAVE" : "EDIT"}
 						</Button>
 					</li>
 				</ul>

@@ -19,14 +19,16 @@ class Grid extends React.Component{
 		editMode: false
 	};
 
+	// Populates grid values from API call
 	componentDidMount(){
-		axios.get("https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/20/1")
+		axios.get("https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/20/1")	// TODO ?
 			.then(res => {
+				var newState = [];
 				res.data.data.forEach(record => {
-					var newState = this.state.records.concat({
+					newState = newState.concat({
 						key: uuidv4(),
 						isSelected: false,
-						id: record.id,
+						id: record.userId,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -35,10 +37,16 @@ class Grid extends React.Component{
 						createdBy: record.createdBy,
 						modifiedBy: record.modifiedBy,
 					});
-
-					this.setState({records: newState});					
 				})
+				this.setState({records: newState});	
 			})
+	}
+
+	handleDeleteClick = () => {
+		this.state.records.forEach(record => {
+			if(record.isSelected)
+				console.log(record.id + " is selected");
+		})
 	}
 
 	handleEditClick = () => {
@@ -46,11 +54,16 @@ class Grid extends React.Component{
 		this.setState({editMode: toggle})
 	}
 
+	handleCheck = (uid) => {
+		console.log("asd");
+	}
+
 	render(){
 		return(
 			<>
 				<Controls
 					editMode={this.state.editMode}
+					onDeleteClick={this.handleDeleteClick}
 					onEditClick={this.handleEditClick}
 				/>
 				<table style={{"width":"100%"}}>
@@ -58,6 +71,7 @@ class Grid extends React.Component{
 					<RecordList
 						records={this.state.records}
 						editMode={this.state.editMode}
+						handleCheck={this.handleCheck}
 				/>
 				</table>
 				<GridPagination
@@ -108,7 +122,9 @@ class RecordList extends React.Component{
 					dateModified={record.dateModified}
 					createdBy={record.createdBy}
 					modifiedBy={record.modifiedBy}
+
 					editMode={this.props.editMode}
+					onCheckChange={this.props.handleCheck}
 				/>
 			)
 		})
@@ -127,13 +143,20 @@ RecordList.propTypes = {
 
 
 
-class RecordItem extends React.Component{	
+class RecordItem extends React.Component{
 	render(){
 		const isSelected = this.props.isSelected;
 
+		const handleCheckClick = () => {
+			this.props.onCheckChange();
+		}
+
 		return(
 			<tr>
-				<td><Checkbox></Checkbox></td> 
+				<td><Checkbox 
+					checked={this.props.isSelected}
+					onChange={handleCheckClick}/>
+				</td> 
 				<td><Button variant="outlined"><CreateIcon fontSize="small"/></Button></td>
 				<td>{this.props.id}</td>
 				{this.props.editMode
@@ -159,29 +182,28 @@ RecordItem.propTypes = {
 
 
 function GridPagination(props){
-
-	const [page, setPage] = React.useState(0);		// Start at page 1 (ie. index 0)
-	const [setRowsPerPage] = React.useState(10);
+	const [page, setPage] = React.useState(0);
+	const [rowsPerPage, setRowsPerPage] = React.useState(20);
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
 	};
 
 	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(parseInt(event.target.value, 10));
+		setRowsPerPage(+event.target.value);
 		setPage(0);
 	};
 
 	return(
 		<TablePagination
 			rowsPerPageOptions={[5, 10, 20, 50, 100, 500, 1000]}
-			rowsPerPage={20}
 			component="div"
 			count={props.numRecords}
+			rowsPerPage={rowsPerPage}
 			page={page}
 			onChangePage={handleChangePage}
 			onChangeRowsPerPage={handleChangeRowsPerPage}
-		/>
+      />
 	)
 	
 }
