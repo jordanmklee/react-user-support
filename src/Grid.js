@@ -26,7 +26,8 @@ class Grid extends React.Component{
 				var newState = [];
 				res.data.data.forEach(record => {
 					newState = newState.concat({
-						key: uuidv4(),
+						//key: uuidv4(),
+						key: record.id,
 						uniqueId: uuidv4(),
 						isSelected: false,
 						id: record.userId,
@@ -43,11 +44,34 @@ class Grid extends React.Component{
 			})
 	}
 
-	handleDeleteClick = () => {
-		this.state.records.forEach(record => {
-			if(record.isSelected)
-				console.log("TODO delete: " + record);
+	
+	// TODO something wrong with this? keys seem to be being reused (look up proper way to delete element from state array)
+	// TODO Also, selection makes ID col entry disappear?
+	deleteRecord = (deleteIds) => {
+		console.log("Deleting " + deleteIds);
+		var newStateRecords = [];
+		deleteIds.forEach(deleteId => {
+			this.state.records.forEach(record => {
+				if(record.uniqueId !== deleteId){
+					newStateRecords = newStateRecords.concat(record);
+				}
+			})
 		})
+
+		this.setState({records: newStateRecords})
+	}
+
+
+	handleDeleteClick = () => {
+		var deleteIds = [];
+		
+		this.state.records.forEach(record => {
+			if(record.isSelected){
+				console.log("TODO delete: " + record.uniqueId);
+				deleteIds = deleteIds.concat(record.uniqueId);
+			}
+		})
+		this.deleteRecord(deleteIds);
 	}
 
 	handleEditClick = () => {
@@ -56,8 +80,6 @@ class Grid extends React.Component{
 	}
 
 	handleCheck = (item) => {
-		console.log(item.props.uniqueId);
-
 		var newStateRecords = [];
 
 		this.state.records.forEach(record => {
@@ -67,7 +89,7 @@ class Grid extends React.Component{
 						key: record.key,
 						uniqueId: record.uniqueId,
 						isSelected: toggledSelect,
-						id: record.userId,
+						id: record.Id,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -134,6 +156,7 @@ class GridHeader extends React.Component{
 
 
 
+// TODO render elements selected by the pagination
 class RecordList extends React.Component{
 	render(){
 		const records = this.props.records.map((record) => {
