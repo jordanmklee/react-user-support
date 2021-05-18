@@ -9,36 +9,34 @@ import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import { TablePagination } from "@material-ui/core";
 
+import axios from "axios";
+
 class Grid extends React.Component{
-	// TODO Remove this hardcoded state
 	state = {
-		records: [
-			{
-				key: uuidv4(),
-				isSelected: false,
-				id: 1,
-				screenName: "John Smith",
-				description: "lorem ipsum",
-				recordStatus: "record a",
-				dateCreated: Date.now(),
-				dateModified: Date.now(),
-				createdBy: "John Smith",
-				modifiedBy: "John Smith",
-			},
-			{
-				key: uuidv4(),
-				isSelected: false,
-				id: 1,
-				screenName: "Jane Smith",
-				description: "ipsum lorem",
-				recordStatus: "record b",
-				dateCreated: Date.now(),
-				dateModified: Date.now(),
-				createdBy: "Jane Smith",
-				modifiedBy: "Jane Smith",
-			},
-		]
+		records: []
 	};
+
+	componentDidMount(){
+		axios.get("https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/20/1")
+			.then(res => {
+				res.data.data.forEach(record => {
+					var newState = this.state.records.concat({
+						key: uuidv4(),
+						isSelected: false,
+						id: record.id,
+						screenName: record.screenName,
+						description: record.description,
+						recordStatus: record.recordStatus,
+						dateCreated: record.dateCreated,
+						dateModified: record.dateModified,
+						createdBy: record.createdBy,
+						modifiedBy: record.modifiedBy,
+					});
+					this.setState({records: newState});
+					
+				})
+			})
+	}
 
 	render(){
 		return(
@@ -47,7 +45,7 @@ class Grid extends React.Component{
 					<GridHeader/>
 					<RecordList
 						records={this.state.records}
-					/>
+				/>
 				</table>
 				<GridPagination
 					numRecords={this.state.records.length}
@@ -121,8 +119,8 @@ class RecordItem extends React.Component{
 
 		return(
 			<tr>
-				<td><Checkbox checked={isSelected}></Checkbox></td>
-				<td><Button><CreateIcon fontSize="small"/></Button></td>
+				<td><Checkbox checked={isSelected}></Checkbox></td> 
+				<td><Button variant="outlined"><CreateIcon fontSize="small"/></Button></td>
 				<td>{this.props.id}</td>
 				{editMode
 					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.screenName}/></td> 
