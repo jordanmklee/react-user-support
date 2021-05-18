@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import Checkbox from '@material-ui/core/Checkbox';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from "@material-ui/core/Button";
@@ -12,7 +14,8 @@ class Grid extends React.Component{
 	state = {
 		records: [
 			{
-				isSelected: true,
+				key: uuidv4(),
+				isSelected: false,
 				id: 1,
 				screenName: "John Smith",
 				description: "lorem ipsum",
@@ -23,6 +26,7 @@ class Grid extends React.Component{
 				modifiedBy: "John Smith",
 			},
 			{
+				key: uuidv4(),
 				isSelected: false,
 				id: 1,
 				screenName: "Jane Smith",
@@ -45,7 +49,9 @@ class Grid extends React.Component{
 						records={this.state.records}
 					/>
 				</table>
-				<GridPagination></GridPagination>
+				<GridPagination
+					numRecords={this.state.records.length}
+				/>
 			</>
 		)
 	}
@@ -81,6 +87,7 @@ class RecordList extends React.Component{
 		const records = this.props.records.map((record) => {
 			return(
 				<RecordItem
+					key={record.key}
 					isSelected={record.isSelected}
 					id={record.id}
 					screenName={record.screenName}
@@ -109,7 +116,7 @@ RecordList.propTypes = {
 
 class RecordItem extends React.Component{	
 	render(){
-		const editMode = true;	// TODO this needs to update based on EDIT button
+		const editMode = false;	// TODO this needs to update based on EDIT button
 		const isSelected = this.props.isSelected;
 
 		return(
@@ -139,17 +146,35 @@ RecordItem.propTypes = {
 }
 
 
-class GridPagination extends React.Component{
-	render(){
-		return(
-			<TablePagination
-				component="div"
-				count={100}
-				rowsPerPage={20}
-				rowsPerPageOptions={[5, 10, 20, 50, 100, 500, 1000]}
-			/>
-		)
-	}
+function GridPagination(props){
+
+	const [page, setPage] = React.useState(0);		// Start at page 1 (ie. index 0)
+	const [setRowsPerPage] = React.useState(10);
+
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(parseInt(event.target.value, 10));
+		setPage(0);
+	};
+
+	return(
+		<TablePagination
+			rowsPerPageOptions={[5, 10, 20, 50, 100, 500, 1000]}
+			rowsPerPage={20}
+			component="div"
+			count={props.numRecords}
+			page={page}
+			onChangePage={handleChangePage}
+			onChangeRowsPerPage={handleChangeRowsPerPage}
+		/>
+	)
+	
+}
+GridPagination.propTypes = {
+	numRecords: PropTypes.number
 }
 
 export default Grid;
