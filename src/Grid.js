@@ -111,7 +111,7 @@ class RecordItem extends React.Component{
 	render(){
 		const editMode = true;	// TODO this needs to update based on EDIT button
 		const isSelected = this.props.isSelected;
-		
+
 		return(
 			<tr>
 				<td><Checkbox checked={isSelected}></Checkbox></td>
@@ -137,8 +137,6 @@ class RecordItem extends React.Component{
 RecordItem.propTypes = {
 	isSelected: PropTypes.bool
 }
-
-
 
 
 class GridPagination extends React.Component{
