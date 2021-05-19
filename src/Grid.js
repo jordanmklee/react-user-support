@@ -84,7 +84,36 @@ class Grid extends React.Component{
 	// Toggles editMode state variable
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;
+
+		// TODO update state values from TextFields
+
+
 		this.setState({editMode: toggle})
+	}
+
+	// Update state to reflect changed TextField for ScreenName
+	handleScreenNameChange = (id, value) => {
+		let newRecords = [];
+		this.state.records.forEach(record => {
+			if(record.id === id){
+				newRecords = newRecords.concat({
+					key: record.id,
+						isSelected: record.isSelected,
+						id: record.id,
+						screenName: value.target.value,		// New ScreenName
+						description: record.description,
+						recordStatus: record.recordStatus,
+						dateCreated: record.dateCreated,
+						dateModified: record.dateModified,
+						createdBy: record.createdBy,
+						modifiedBy: record.modifiedBy,
+				})
+			}
+			else
+				newRecords = newRecords.concat(record)
+		})
+
+		this.setState({records: newRecords});
 	}
 
 	// Updates isChecked for de/selected RecordItems
@@ -152,6 +181,7 @@ class Grid extends React.Component{
 						records={this.state.records}
 						editMode={this.state.editMode}
 						handleCheck={this.handleCheck}
+						handleScreenNameChange={this.handleScreenNameChange}
 				/>
 				</table>
 				<GridPagination
@@ -210,6 +240,7 @@ class RecordList extends React.Component{
 
 					editMode={this.props.editMode}
 					onCheckChange={this.props.handleCheck}
+					onScreenNameChange={this.props.handleScreenNameChange}
 				/>
 			)
 		})
@@ -234,6 +265,10 @@ class RecordItem extends React.Component{
 			this.props.onCheckChange(this);
 		}
 
+		const handleScreenNameChange = (value) => {
+			this.props.onScreenNameChange(this.props.id, value);
+		}
+
 		return(
 			<tr>
 				<td>
@@ -254,7 +289,8 @@ class RecordItem extends React.Component{
 				</td>
 				<td>{this.props.id}</td>
 				{this.props.editMode
-					? <td><TextField variant="filled" defaultValue={this.props.screenName}/></td> 
+					? <td><TextField variant="filled" onChange={handleScreenNameChange}
+						defaultValue={this.props.screenName}/></td> 
 					: <td>{this.props.screenName}</td>}
 				{this.props.editMode
 					? <td><TextField variant="filled" defaultValue={this.props.description}/></td>
