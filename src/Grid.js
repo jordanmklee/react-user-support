@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from 'prop-types';
 
+import { Link } from "react-router-dom";
+
 import Checkbox from '@material-ui/core/Checkbox';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from "@material-ui/core/Button";
@@ -17,7 +19,7 @@ class Grid extends React.Component{
 		deleteMode: false,
 		editMode: false,
 		totalNumRecords: 0,
-		numRecordsPerPage: 5,	// TODO default 20
+		numRecordsPerPage: 20,
 		pageNumber: 1,
 		searchString: "",
 	};
@@ -32,6 +34,8 @@ class Grid extends React.Component{
 		this.getRecords();
 	}
 
+
+
 	// Generates URL for API call using state variables
 	generateUrl = () => {
 		return "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport"
@@ -39,6 +43,8 @@ class Grid extends React.Component{
 				+ "/" + this.state.pageNumber
 				+ "/" + this.state.searchString;
 	}
+
+
 
 	getRecords = () => {
 		axios.get(this.generateUrl())
@@ -62,6 +68,8 @@ class Grid extends React.Component{
 				this.setState({records: newState});
 			})
 	}
+
+
 
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
@@ -124,11 +132,14 @@ class Grid extends React.Component{
 	}
 
 
+
 	handlePageChange = (newPageNum) => {
 		this.setState({pageNumber: parseInt(newPageNum+1)}, () => { 
 			this.getRecords();
 		});
 	}
+
+
 
 	handleRowsPerPageChange = (newRowsPerPage) => {
 		this.setState({numRecordsPerPage: parseInt(newRowsPerPage)}, () => {
@@ -190,7 +201,7 @@ class GridHeader extends React.Component{
 
 
 
-// TODO render elements selected by the pagination
+
 class RecordList extends React.Component{
 	render(){
 		const records = this.props.records.map((record) => {
@@ -239,7 +250,14 @@ class RecordItem extends React.Component{
 					checked={this.props.isSelected}
 					onChange={handleCheckClick}/>
 				</td> 
-				<td><Button variant="outlined"><CreateIcon fontSize="small"/></Button></td>
+				<td>
+					<Link to="/edit">
+						<Button
+						variant="outlined">
+							<CreateIcon fontSize="small"/>
+						</Button>
+					</Link>
+				</td>
 				<td>{this.props.id}</td>
 				{this.props.editMode
 					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.screenName}/></td> 
