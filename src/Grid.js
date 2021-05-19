@@ -116,6 +116,31 @@ class Grid extends React.Component{
 		this.setState({records: newRecords});
 	}
 
+	// Update state to reflect changed TextField for Description
+	handleDescriptionChange = (id, value) => {
+		let newRecords = [];
+		this.state.records.forEach(record => {
+			if(record.id === id){
+				newRecords = newRecords.concat({
+					key: record.id,
+						isSelected: record.isSelected,
+						id: record.id,
+						screenName: record.screenName,
+						description: value.target.value,		// New Description
+						recordStatus: record.recordStatus,
+						dateCreated: record.dateCreated,
+						dateModified: record.dateModified,
+						createdBy: record.createdBy,
+						modifiedBy: record.modifiedBy,
+				})
+			}
+			else
+				newRecords = newRecords.concat(record)
+		})
+
+		this.setState({records: newRecords});
+	}
+
 	// Updates isChecked for de/selected RecordItems
 	handleCheck = (item) => {
 		var newStateRecords = [];
@@ -182,6 +207,7 @@ class Grid extends React.Component{
 						editMode={this.state.editMode}
 						handleCheck={this.handleCheck}
 						handleScreenNameChange={this.handleScreenNameChange}
+						handleDescriptionChange={this.handleDescriptionChange}
 				/>
 				</table>
 				<GridPagination
@@ -241,6 +267,7 @@ class RecordList extends React.Component{
 					editMode={this.props.editMode}
 					onCheckChange={this.props.handleCheck}
 					onScreenNameChange={this.props.handleScreenNameChange}
+					onDescriptionChange={this.props.handleDescriptionChange}
 				/>
 			)
 		})
@@ -269,6 +296,10 @@ class RecordItem extends React.Component{
 			this.props.onScreenNameChange(this.props.id, value);
 		}
 
+		const handleDescriptionChange = (value) => {
+			this.props.onDescriptionChange(this.props.id, value);
+		}
+
 		return(
 			<tr>
 				<td>
@@ -293,7 +324,8 @@ class RecordItem extends React.Component{
 						defaultValue={this.props.screenName}/></td> 
 					: <td>{this.props.screenName}</td>}
 				{this.props.editMode
-					? <td><TextField variant="filled" defaultValue={this.props.description}/></td>
+					? <td><TextField variant="filled" onChange={handleDescriptionChange}
+						defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
 				{this.props.editMode
 					? <td><TextField variant="filled" defaultValue={this.props.recordStatus}/></td>
