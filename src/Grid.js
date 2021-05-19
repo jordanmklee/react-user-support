@@ -128,7 +128,12 @@ class Grid extends React.Component{
 		this.setState({pageNumber: parseInt(newPageNum+1)}, () => { 
 			this.getRecords();
 		});
+	}
 
+	handleRowsPerPageChange = (newRowsPerPage) => {
+		this.setState({numRecordsPerPage: parseInt(newRowsPerPage)}, () => {
+			this.getRecords();
+		})
 	}
 
 	render(){
@@ -153,6 +158,7 @@ class Grid extends React.Component{
 					numRecordsPerPage={this.state.numRecordsPerPage}
 					pageNumber={this.state.pageNumber}
 					onPageChange={this.handlePageChange}
+					onRowsPerPageChange={this.handleRowsPerPageChange}
 				/>
 			</>
 		)
@@ -269,6 +275,7 @@ function GridPagination(props){
 	const handleChangeRowsPerPage = (event) => {
 		setRowsPerPage(event.target.value);
 		setPage(0);
+		props.onRowsPerPageChange(event.target.value);
 	};
 
 	return(
