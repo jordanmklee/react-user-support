@@ -19,19 +19,25 @@ class Controls extends React.Component{
 						</Button>
 					</li>
 					<li>
+						{this.props.deleteMode ?
 						<Button
 							variant="contained"
 							color="secondary"
 							onClick={this.props.onDeleteClick}>
 							DELETE
 						</Button>
+						: <Button
+							disabled
+							variant="contained">
+							DELETE
+						</Button>}
 					</li>
 					<li>
 						<Button
-							variant="outlined"
+							variant="contained"
 							color="default"
 							onClick={this.props.onEditClick}>
-								{this.props.editMode ? "SAVE" : "EDIT"}
+							{this.props.editMode ? "SAVE" : "EDIT"}
 						</Button>
 					</li>
 				</ul>

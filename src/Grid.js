@@ -14,7 +14,8 @@ import Controls from "./Controls";
 class Grid extends React.Component{
 	state = {
 		records: [],
-		editMode: false
+		deleteMode: false,
+		editMode: false,
 	};
 
 	// Populates grid values from API call
@@ -50,16 +51,22 @@ class Grid extends React.Component{
 				deleteIds = deleteIds.concat(record.id);
 		})
 
+		// TODO delete using API
+
 		// Create new state by filtering the IDs to delete from prev state
 		var newState = this.state.records.filter(e => !deleteIds.includes(e.id));
 		this.setState({records: newState});
 	}
+
+
 
 	// Toggles editMode state variable
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;
 		this.setState({editMode: toggle})
 	}
+
+
 
 	handleCheck = (item) => {
 		var newStateRecords = [];
@@ -84,14 +91,23 @@ class Grid extends React.Component{
 			else{
 				newStateRecords = newStateRecords.concat(record);
 			}
-			this.setState({records: newStateRecords})
 		})
+		
+		// Undisable delete button when at least one record selected
+		var newDeleteMode = false;
+		newStateRecords.forEach(record => {
+			if(record.isSelected)
+				newDeleteMode = true;
+		})
+
+		this.setState({records: newStateRecords, deleteMode: newDeleteMode})
 	}
 
 	render(){
 		return(
 			<>
 				<Controls
+					deleteMode={this.state.deleteMode}
 					editMode={this.state.editMode}
 					onDeleteClick={this.handleDeleteClick}
 					onEditClick={this.handleEditClick}
