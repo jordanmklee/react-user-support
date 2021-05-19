@@ -16,11 +16,32 @@ class Grid extends React.Component{
 		records: [],
 		deleteMode: false,
 		editMode: false,
+		totalNumRecords: 0,
+		numRecordsPerPage: 5,	// TODO default 20
+		pageNumber: 1,
+		searchString: "",
 	};
 
-	// Populates grid values from API call
+	// Populate grid values from API call
 	componentDidMount(){
-		axios.get("https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/20/1")	// TODO ?
+		axios.get(this.generateUrl())
+		.then(res => {
+			this.setState({totalNumRecords: parseInt(res.data.message)});	
+		})
+
+		this.getRecords();
+	}
+
+	// Generates URL for API call using state variables
+	generateUrl = () => {
+		return "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport"
+				+ "/" + this.state.numRecordsPerPage
+				+ "/" + this.state.pageNumber
+				+ "/" + this.state.searchString;
+	}
+
+	getRecords = () => {
+		axios.get(this.generateUrl())
 			.then(res => {
 				var newState = [];
 				res.data.data.forEach(record => {
@@ -37,11 +58,10 @@ class Grid extends React.Component{
 						modifiedBy: record.modifiedBy,
 					});
 				})
-				this.setState({records: newState});	
+		
+				this.setState({records: newState});
 			})
 	}
-
-
 
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
@@ -103,6 +123,14 @@ class Grid extends React.Component{
 		this.setState({records: newStateRecords, deleteMode: newDeleteMode})
 	}
 
+
+	handlePageChange = (newPageNum) => {
+		this.setState({pageNumber: parseInt(newPageNum+1)}, () => { 
+			this.getRecords();
+		});
+
+	}
+
 	render(){
 		return(
 			<>
@@ -121,7 +149,10 @@ class Grid extends React.Component{
 				/>
 				</table>
 				<GridPagination
-					numRecords={this.state.records.length}
+					numRecords={this.state.totalNumRecords}
+					numRecordsPerPage={this.state.numRecordsPerPage}
+					pageNumber={this.state.pageNumber}
+					onPageChange={this.handlePageChange}
 				/>
 			</>
 		)
@@ -228,14 +259,15 @@ RecordItem.propTypes = {
 
 function GridPagination(props){
 	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(20);
+	const [rowsPerPage, setRowsPerPage] = React.useState(props.numRecordsPerPage);
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
+		props.onPageChange(newPage);
 	};
 
 	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
+		setRowsPerPage(event.target.value);
 		setPage(0);
 	};
 
