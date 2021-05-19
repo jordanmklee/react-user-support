@@ -33,8 +33,6 @@ class Grid extends React.Component{
 		this.getRecords();
 	}
 
-
-
 	// Generates URL for API call using state variables
 	generateUrl = () => {
 		return "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport"
@@ -43,8 +41,7 @@ class Grid extends React.Component{
 				+ "/" + this.state.searchString;
 	}
 
-
-
+	// Retrieves records from API, based on state variables
 	getRecords = () => {
 		axios.get(this.generateUrl())
 			.then(res => {
@@ -68,8 +65,7 @@ class Grid extends React.Component{
 			})
 	}
 
-
-
+	// Deletes all selected RecordItems
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
 		var deleteIds = [];
@@ -85,16 +81,13 @@ class Grid extends React.Component{
 		this.setState({records: newState, deleteMode: false});		// Once deleted, disable button again
 	}
 
-
-
 	// Toggles editMode state variable
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;
 		this.setState({editMode: toggle})
 	}
 
-
-
+	// Updates isChecked for de/selected RecordItems
 	handleCheck = (item) => {
 		var newStateRecords = [];
 
@@ -130,16 +123,14 @@ class Grid extends React.Component{
 		this.setState({records: newStateRecords, deleteMode: newDeleteMode})
 	}
 
-
-
+	// Updates grid items from API for new page selected from pagination component
 	handlePageChange = (newPageNum) => {
 		this.setState({pageNumber: parseInt(newPageNum+1)}, () => { 
 			this.getRecords();
 		});
 	}
 
-
-
+	// Updates number of grid items based on selected value from pagination component
 	handleRowsPerPageChange = (newRowsPerPage) => {
 		this.setState({numRecordsPerPage: parseInt(newRowsPerPage)}, () => {
 			this.getRecords();
