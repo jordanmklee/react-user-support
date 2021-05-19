@@ -2,12 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Grid from "./Grid";
-
-const Edit = () => (
-	<div>
-		<h1>Hello world</h1>
-	</div>
-);
+import Edit from "./Edit";
 
 function App() {
 	return (

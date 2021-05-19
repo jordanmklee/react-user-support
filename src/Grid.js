@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from 'prop-types';
-
 import { Link } from "react-router-dom";
 
 import Checkbox from '@material-ui/core/Checkbox';
@@ -83,7 +82,7 @@ class Grid extends React.Component{
 
 		// Create new state by filtering the IDs to delete from prev state
 		var newState = this.state.records.filter(e => !deleteIds.includes(e.id));
-		this.setState({records: newState});
+		this.setState({records: newState, deleteMode: false});		// Once deleted, disable button again
 	}
 
 
@@ -260,13 +259,13 @@ class RecordItem extends React.Component{
 				</td>
 				<td>{this.props.id}</td>
 				{this.props.editMode
-					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.screenName}/></td> 
+					? <td><TextField variant="outlined" defaultValue={this.props.screenName}/></td> 
 					: <td>{this.props.screenName}</td>}
 				{this.props.editMode
-					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.description}/></td>
+					? <td><TextField variant="outlined" defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
 				{this.props.editMode
-					? <td><TextField id="outlined-basic" variant="outlined" defaultValue={this.props.recordStatus}/></td>
+					? <td><TextField variant="outlined" defaultValue={this.props.recordStatus}/></td>
 					: <td>{this.props.recordStatus}</td>}
 				<td>{this.props.dateCreated}</td>
 				<td>{this.props.dateModified}</td>
