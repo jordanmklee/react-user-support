@@ -1,9 +1,5 @@
 import React from "react";
-import Controls from "./Controls";
-
 import PropTypes from 'prop-types';
-
-import { v4 as uuidv4 } from 'uuid';
 
 import Checkbox from '@material-ui/core/Checkbox';
 import CreateIcon from '@material-ui/icons/Create';
@@ -12,6 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import { TablePagination } from "@material-ui/core";
 
 import axios from "axios";
+
+import Controls from "./Controls";
 
 class Grid extends React.Component{
 	state = {
@@ -26,11 +24,9 @@ class Grid extends React.Component{
 				var newState = [];
 				res.data.data.forEach(record => {
 					newState = newState.concat({
-						//key: uuidv4(),
 						key: record.id,
-						uniqueId: uuidv4(),
 						isSelected: false,
-						id: record.userId,
+						id: record.id,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -44,36 +40,22 @@ class Grid extends React.Component{
 			})
 	}
 
-	
-	// TODO something wrong with this? keys seem to be being reused (look up proper way to delete element from state array)
-	// TODO Also, selection makes ID col entry disappear?
-	deleteRecord = (deleteIds) => {
-		console.log("Deleting " + deleteIds);
-		var newStateRecords = [];
-		deleteIds.forEach(deleteId => {
-			this.state.records.forEach(record => {
-				if(record.uniqueId !== deleteId){
-					newStateRecords = newStateRecords.concat(record);
-				}
-			})
-		})
-
-		this.setState({records: newStateRecords})
-	}
 
 
 	handleDeleteClick = () => {
+		// Get list of IDs to delete
 		var deleteIds = [];
-		
 		this.state.records.forEach(record => {
-			if(record.isSelected){
-				console.log("TODO delete: " + record.uniqueId);
-				deleteIds = deleteIds.concat(record.uniqueId);
-			}
+			if(record.isSelected)
+				deleteIds = deleteIds.concat(record.id);
 		})
-		this.deleteRecord(deleteIds);
+
+		// Create new state by filtering the IDs to delete from prev state
+		var newState = this.state.records.filter(e => !deleteIds.includes(e.id));
+		this.setState({records: newState});
 	}
 
+	// Toggles editMode state variable
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;
 		this.setState({editMode: toggle})
@@ -83,13 +65,13 @@ class Grid extends React.Component{
 		var newStateRecords = [];
 
 		this.state.records.forEach(record => {
-			if(record.uniqueId === item.props.uniqueId){
+			if(record.id === item.props.id){
 				var toggledSelect = !record.isSelected;
+
 				newStateRecords = newStateRecords.concat({
 						key: record.key,
-						uniqueId: record.uniqueId,
-						isSelected: toggledSelect,
-						id: record.Id,
+						isSelected: toggledSelect,			// Toggle isSelected between true and false
+						id: record.id,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -104,7 +86,6 @@ class Grid extends React.Component{
 			}
 			this.setState({records: newStateRecords})
 		})
-
 	}
 
 	render(){
@@ -163,7 +144,6 @@ class RecordList extends React.Component{
 			return(
 				<RecordItem
 					key={record.key}
-					uniqueId={record.uniqueId}
 					isSelected={record.isSelected}
 					id={record.id}
 					screenName={record.screenName}
