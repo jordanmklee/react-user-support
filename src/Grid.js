@@ -245,27 +245,31 @@ class RecordItem extends React.Component{
 
 		return(
 			<tr>
-				<td><Checkbox 
-					checked={this.props.isSelected}
-					onChange={handleCheckClick}/>
+				<td>
+					{!this.props.editMode
+					? <Checkbox checked={this.props.isSelected} onChange={handleCheckClick}/>
+					: <Checkbox checked={this.props.isSelected} disabled/>}
 				</td> 
 				<td>
-					<Link to="/edit">
-						<Button
-						variant="outlined">
+					{!this.props.editMode
+					? <Link to="/edit">
+						<Button variant="outlined" color="primary">
 							<CreateIcon fontSize="small"/>
 						</Button>
 					</Link>
+					: <Button variant="outlined" disabled>
+						<CreateIcon fontSize="small"/>
+					</Button>}
 				</td>
 				<td>{this.props.id}</td>
 				{this.props.editMode
-					? <td><TextField variant="outlined" defaultValue={this.props.screenName}/></td> 
+					? <td><TextField variant="filled" defaultValue={this.props.screenName}/></td> 
 					: <td>{this.props.screenName}</td>}
 				{this.props.editMode
-					? <td><TextField variant="outlined" defaultValue={this.props.description}/></td>
+					? <td><TextField variant="filled" defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
 				{this.props.editMode
-					? <td><TextField variant="outlined" defaultValue={this.props.recordStatus}/></td>
+					? <td><TextField variant="filled" defaultValue={this.props.recordStatus}/></td>
 					: <td>{this.props.recordStatus}</td>}
 				<td>{this.props.dateCreated}</td>
 				<td>{this.props.dateModified}</td>

@@ -12,8 +12,8 @@ class Controls extends React.Component{
 				
 				<ul className="buttonContainer" style={{float:"right"}}>
 					<li>
-						{!this.props.editMode ?
-						<Button variant="contained" color="primary">
+						{!this.props.editMode
+						? <Button variant="contained" color="primary">
 							ADD
 						</Button>
 						: <Button variant="contained" color="primary" disabled>
@@ -21,8 +21,8 @@ class Controls extends React.Component{
 						</Button>}
 					</li>
 					<li>
-						{this.props.deleteMode ?
-						<Button variant="contained" color="secondary" onClick={this.props.onDeleteClick}>
+						{this.props.deleteMode && !this.props.editMode
+						? <Button variant="contained" color="secondary" onClick={this.props.onDeleteClick}>
 							DELETE
 						</Button>
 						: <Button variant="contained" color="secondary" disabled>
@@ -30,8 +30,8 @@ class Controls extends React.Component{
 						</Button>}
 					</li>
 					<li>
-						{this.props.editMode ?
-						<Button variant="contained" color="primary" onClick={this.props.onEditClick}>
+						{this.props.editMode
+						? <Button variant="contained" color="primary" onClick={this.props.onEditClick}>
 							SAVE
 						</Button>
 						: <Button variant="contained" color="default" onClick={this.props.onEditClick}>
