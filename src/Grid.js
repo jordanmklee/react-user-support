@@ -8,12 +8,11 @@ import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
 import { TablePagination } from "@material-ui/core";
 
-import axios from "axios";
-
 import Controls from "./Controls";
 
+import axios from "axios";
 const GET_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/";
-const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
+//const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
 const DELETE_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/DeleteUserSupport/";
 
 class Grid extends React.Component{
@@ -79,6 +78,7 @@ class Grid extends React.Component{
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
 		// TODO delete the array deleteIds, just do everything on API and re-render
+		// (this will solve the pagination item count not updating on delete)
 		var deleteIds = [];
 		this.state.records.forEach(record => {
 			if(record.isSelected){
