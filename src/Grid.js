@@ -20,7 +20,6 @@ class Grid extends React.Component{
 		totalNumRecords: 0,
 		numRecordsPerPage: 20,
 		pageNumber: 1,
-		searchString: "",
 	};
 
 	// Populate grid values from API call
@@ -30,7 +29,7 @@ class Grid extends React.Component{
 			this.setState({totalNumRecords: parseInt(res.data.message)});	
 		})
 
-		this.getRecords();
+		this.getRecords("");
 	}
 
 	// Generates URL for API call using state variables
@@ -38,12 +37,12 @@ class Grid extends React.Component{
 		return "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport"
 				+ "/" + this.state.numRecordsPerPage
 				+ "/" + this.state.pageNumber
-				+ "/" + this.state.searchString;
+				+ "/";
 	}
 
 	// Retrieves records from API, based on state variables
-	getRecords = () => {
-		axios.get(this.generateUrl())
+	getRecords = (term) => {
+		axios.get(this.generateUrl() + term)
 			.then(res => {
 				var newState = [];
 				res.data.data.forEach(record => {
@@ -63,6 +62,10 @@ class Grid extends React.Component{
 		
 				this.setState({records: newState});
 			})
+	}
+
+	handleSearchChange = (term) => {
+		this.getRecords(term);
 	}
 
 	// Deletes all selected RecordItems
@@ -85,8 +88,8 @@ class Grid extends React.Component{
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;
 
-		// TODO update state values from TextFields
-
+		// TODO TextFields every onChange updates the state; slow input!
+		// TODO save using API
 
 		this.setState({editMode: toggle})
 	}
@@ -180,14 +183,14 @@ class Grid extends React.Component{
 	// Updates grid items from API for new page selected from pagination component
 	handlePageChange = (newPageNum) => {
 		this.setState({pageNumber: parseInt(newPageNum+1)}, () => { 
-			this.getRecords();
+			this.getRecords("");
 		});
 	}
 
 	// Updates number of grid items based on selected value from pagination component
 	handleRowsPerPageChange = (newRowsPerPage) => {
 		this.setState({numRecordsPerPage: parseInt(newRowsPerPage)}, () => {
-			this.getRecords();
+			this.getRecords("");
 		})
 	}
 
@@ -199,6 +202,7 @@ class Grid extends React.Component{
 					editMode={this.state.editMode}
 					onDeleteClick={this.handleDeleteClick}
 					onEditClick={this.handleEditClick}
+					onSearchChange={this.handleSearchChange}
 				/>
 				<table style={{"width":"100%"}}>
 					<GridHeader/>
