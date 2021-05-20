@@ -87,10 +87,9 @@ div.editContainer{
 	margin: auto;
 }
 
-ul.textFieldContainer{
-	list-style-type: none;
-}
-
-ul.textFieldContainer li{
-	padding: 10px;
+div.inputContainer{
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
