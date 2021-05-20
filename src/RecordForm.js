@@ -68,16 +68,31 @@ class ReactForm extends React.Component{
 		}
 	}
 
-	render(){
-		// TODO use GetUserBySupportId API to fill in the default values when editing
-
-		// TODO use GetRecordStatusListForUsers API to fill in the Record Status dropdown values
-		var recordStatusValues;
+	// TODO use GetRecordStatusListForUsers API to fill in the Record Status dropdown values
+	getRecordStatusValues(){
+		var values;
 		axios.get(GET_RECORD_STATUS_URL)
 			.then(res => {
-				recordStatusValues = res.data.data;
-				//console.log(recordStatusValues);
+				values = res.data.data;
+				console.log(values[0].id);
+				
+				// TODO NOT WORKING
+				return(
+					<Select
+						value={this.state.recordStatus}
+						onChange={this.handleNewRecordStatus}
+						fullWidth>
+						<MenuItem value={values[0].id}>{values[0].name}</MenuItem>
+						<MenuItem value={values[1].id}>{values[1].name}</MenuItem>
+						<MenuItem value={values[2].id}>{values[2].name}</MenuItem>
+					</Select>
+				)
 			});
+	}
+
+	render(){
+		this.getRecordStatusValues();
+		// TODO use GetUserBySupportId API to fill in the default values when editing
 
 		return(
 			<div className="editContainer">
