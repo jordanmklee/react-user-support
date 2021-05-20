@@ -12,6 +12,10 @@ import axios from "axios";
 
 import Controls from "./Controls";
 
+const GET_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/";
+const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
+const DELETE_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/DeleteUserSupport/";
+
 class Grid extends React.Component{
 	state = {
 		records: [],
@@ -34,10 +38,9 @@ class Grid extends React.Component{
 
 	// Generates URL for API call using state variables
 	generateUrl = () => {
-		return "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport"
-				+ "/" + this.state.numRecordsPerPage
-				+ "/" + this.state.pageNumber
-				+ "/";
+		return GET_URL
+				+ this.state.numRecordsPerPage + "/"
+				+ this.state.pageNumber + "/";
 	}
 
 	// Retrieves records from API, based on state variables
@@ -52,6 +55,7 @@ class Grid extends React.Component{
 						key: record.id,
 						isSelected: false,
 						id: record.id,
+						userId: record.userId,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -74,13 +78,17 @@ class Grid extends React.Component{
 	// Deletes all selected RecordItems
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
+		// TODO delete the array deleteIds, just do everything on API and re-render
 		var deleteIds = [];
 		this.state.records.forEach(record => {
-			if(record.isSelected)
+			if(record.isSelected){
 				deleteIds = deleteIds.concat(record.id);
-		})
 
-		// TODO delete using API
+				// Delete using API
+				axios.delete(DELETE_URL + record.id + "/" + record.userId)
+					.then(res => { console.log(res); })		// TODO delete printout
+			}
+		})
 
 		// Create new state by filtering the IDs to delete from prev state
 		var newState = this.state.records.filter(e => !deleteIds.includes(e.id));
@@ -106,6 +114,7 @@ class Grid extends React.Component{
 					key: record.id,
 						isSelected: record.isSelected,
 						id: record.id,
+						userId: record.userId,
 						screenName: value.target.value,		// New ScreenName
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -131,6 +140,7 @@ class Grid extends React.Component{
 					key: record.id,
 						isSelected: record.isSelected,
 						id: record.id,
+						userId: record.userId,
 						screenName: record.screenName,
 						description: value.target.value,		// New Description
 						recordStatus: record.recordStatus,
@@ -159,6 +169,7 @@ class Grid extends React.Component{
 						key: record.key,
 						isSelected: toggledSelect,			// Toggle isSelected between true and false
 						id: record.id,
+						userId: record.userId,
 						screenName: record.screenName,
 						description: record.description,
 						recordStatus: record.recordStatus,
@@ -263,6 +274,7 @@ class RecordList extends React.Component{
 					key={record.key}
 					isSelected={record.isSelected}
 					id={record.id}
+					userId={record.userId}
 					screenName={record.screenName}
 					description={record.description}
 					recordStatus={record.recordStatus}
