@@ -44,6 +44,8 @@ class Grid extends React.Component{
 	getRecords = (term) => {
 		axios.get(this.generateUrl() + term)
 			.then(res => {
+				var newNumRecords = parseInt(res.data.message);
+				
 				var newState = [];
 				res.data.data.forEach(record => {
 					newState = newState.concat({
@@ -60,10 +62,11 @@ class Grid extends React.Component{
 					});
 				})
 		
-				this.setState({records: newState});
+				this.setState({records: newState, totalNumRecords: newNumRecords});
 			})
 	}
 
+	// Updates grid items based on API search
 	handleSearchChange = (term) => {
 		this.getRecords(term);
 	}
