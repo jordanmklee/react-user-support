@@ -2,6 +2,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Grid from "./Grid";
+import Add from "./Add";
 import Edit from "./Edit";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
 			<h1 style={{"textAlign": "left",}}>User Support</h1>
 			<Router>
 				<Switch>
+					<Route path="/add" component={Add}/>
 					<Route path="/edit" component={Edit}/>
 					<Route path="/" component={Grid}/>
 				</Switch>

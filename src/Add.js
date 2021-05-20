@@ -1,12 +1,12 @@
 import React from "react";
 import RecordForm from "./RecordForm";
 
-class Edit extends React.Component{
+class Add extends React.Component{
 	render(){
 		return(
-			<RecordForm title="Edit"/>
+			<RecordForm title="Add New Record"/>
 		)
 	}
 }
 
-export default Edit;
+export default Add;
