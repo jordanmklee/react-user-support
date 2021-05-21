@@ -3,22 +3,31 @@ import RecordForm from "./RecordForm";
 
 import TextField from '@material-ui/core/TextField';
 
+import axios from "axios";
+const GET_RECORD_BY_ID_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUserSupportById/";
+
 class Edit extends React.Component{
-	render(){
-		const details = <>
-			<div className="inputContainer">
-				<TextField label="Date Created" variant="filled" disabled fullWidth defaultValue="asd"/>
-			</div>
-			<div className="inputContainer">
-				<TextField label="Date Modified" variant="filled" disabled fullWidth defaultValue="asd"/>
-			</div>
-			<div className="inputContainer">
-				<TextField label="Created By" variant="filled" disabled fullWidth defaultValue="asd"/>
-			</div>
-			<div className="inputContainer">
-				<TextField label="Modified By" variant="filled" disabled fullWidth defaultValue="asd"/>
-			</div>
-		</>
+	state = {
+		dateCreated: "",
+		dateModified: "",
+		createdBy: "",
+		modifiedBy: "",
+	}
+	
+	componentDidMount(){
+		// Get record details for props.id from API
+		axios.get(GET_RECORD_BY_ID_URL + this.props.location.state.id)
+			.then(res => {
+				this.setState({
+					dateCreated: res.data.data.dateCreated,
+					dateModified: res.data.data.dateModified,
+					createdBy: res.data.data.createdBy,
+					modifiedBy: res.data.data.modifiedBy,
+				})
+			})
+	}
+	
+	render(){	
 
 		return(
 			<div className="editContainer">
@@ -27,7 +36,22 @@ class Edit extends React.Component{
 					<TextField label="ID" variant="filled" disabled fullWidth defaultValue={this.props.location.state.id}/>
 				</div>
 				
-				<RecordForm recordDetails={details}/>
+				<RecordForm recordDetails={
+					<div>
+						<div className="inputContainer">
+							<TextField label="Date Created" variant="filled" disabled value={this.state.dateCreated}/>
+						</div>
+						<div className="inputContainer">
+							<TextField label="Date Modified" variant="filled" disabled value={this.state.dateModified}/>
+						</div>
+						<div className="inputContainer">
+							<TextField label="Created By" variant="filled" disabled value={this.state.createdBy}/>
+						</div>
+						<div className="inputContainer">
+							<TextField label="Modified By" variant="filled" disabled value={this.state.modifiedBy}/>
+						</div>
+					</div>
+				}/>
 			</div>
 		)
 	}

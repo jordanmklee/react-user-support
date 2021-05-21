@@ -12,7 +12,6 @@ import Controls from "./Controls";
 
 import axios from "axios";
 const GET_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/";
-//const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
 const DELETE_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/DeleteUserSupport/";
 
 class Grid extends React.Component{

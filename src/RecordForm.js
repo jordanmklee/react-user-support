@@ -19,6 +19,7 @@ class ReactForm extends React.Component{
 		screenName: "",
 		description: "",
 		recordStatus: "",
+		
 		error: null,
 		recordStatusValues: [],
 	}
@@ -84,7 +85,7 @@ class ReactForm extends React.Component{
 			return <Redirect to="/"/>
 		
 		return(
-			<div className="formContainer">
+			<div>
 				<div className="inputContainer">
 					{this.state.error
 						? <TextField label="Screen Name" variant="outlined" error helperText="Required" required fullWidth onChange={this.handleNewScreenName}/>
