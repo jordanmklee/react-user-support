@@ -19,6 +19,7 @@ class ReactForm extends React.Component{
 		description: "",
 		recordStatus: "",
 		error: false,
+		recordStatusValues: [],
 	}
 
 	handleNewScreenName = (value) => {
@@ -43,7 +44,7 @@ class ReactForm extends React.Component{
 			this.setState({error: false});
 				
 			let newRecord = {
-				"Id": "0",									// TODO Hardcoded ID = 0 for ADD
+				"Id": "0",									// Hardcoded ID = 0 tells API to add new record
 				"ScreenName": this.state.screenName,
 				"Description": this.state.description,
 				"RecordStatusId": this.state.recordStatus,
@@ -68,30 +69,16 @@ class ReactForm extends React.Component{
 		}
 	}
 
-	// TODO use GetRecordStatusListForUsers API to fill in the Record Status dropdown values
-	getRecordStatusValues(){
-		var values;
+	// Load record status values from API
+	componentDidMount(){
+		// API: GetRecordStatusListForUsers
 		axios.get(GET_RECORD_STATUS_URL)
 			.then(res => {
-				values = res.data.data;
-				console.log(values[0].id);
-				
-				// TODO NOT WORKING
-				return(
-					<Select
-						value={this.state.recordStatus}
-						onChange={this.handleNewRecordStatus}
-						fullWidth>
-						<MenuItem value={values[0].id}>{values[0].name}</MenuItem>
-						<MenuItem value={values[1].id}>{values[1].name}</MenuItem>
-						<MenuItem value={values[2].id}>{values[2].name}</MenuItem>
-					</Select>
-				)
-			});
+				this.setState({recordStatusValues: res.data.data})
+			})
 	}
 
 	render(){
-		this.getRecordStatusValues();
 		// TODO use GetUserBySupportId API to fill in the default values when editing
 
 		return(
@@ -131,9 +118,9 @@ class ReactForm extends React.Component{
 								value={this.state.recordStatus}
 								onChange={this.handleNewRecordStatus}
 								fullWidth>
-								<MenuItem value={1}>New</MenuItem>
-								<MenuItem value={2}>Visible</MenuItem>
-								<MenuItem value={3}>Not Visible</MenuItem>
+									{this.state.recordStatusValues.map((value) => (
+										<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
+									))}
 							</Select>
 						</FormControl>}
 					
