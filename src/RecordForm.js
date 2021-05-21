@@ -21,7 +21,7 @@ class RecordForm extends React.Component{
 
 		screenName: "",
 		description: "",
-		recordStatus: "",
+		recordStatusId: "",
 
 		dateCreated: "",
 		dateModified: "",
@@ -40,8 +40,8 @@ class RecordForm extends React.Component{
 		this.setState({description: value.target.value})
 	}
 
-	handleNewRecordStatus = (value) => {
-		this.setState({recordStatus: value.target.value})
+	handleNewRecordStatusId = (value) => {
+		this.setState({recordStatusId: value.target.value})
 	}
 
 	// Creates new record and submits it via API
@@ -49,12 +49,12 @@ class RecordForm extends React.Component{
 		// Error checking for filled out form
 		if(!(this.state.screenName === ""
 			|| this.state.description === ""
-			|| this.state.recordStatus === "")){
+			|| this.state.recordStatusId === "")){
 			let newRecord = {
 				"Id": this.state.id,									// ID = 0 tells API to add new record; add/edit if ID != 0
 				"ScreenName": this.state.screenName,
 				"Description": this.state.description,
-				"RecordStatusId": this.state.recordStatus,
+				"RecordStatusId": this.state.recordStatusId,
 				"ModifiedBy": "1",							// TODO Hardcoded 1 = Michael Jackson
 			}
 	
@@ -93,7 +93,7 @@ class RecordForm extends React.Component{
 					id: this.props.location.state.id,
 					screenName: res.data.data.screenName,
 					description: res.data.data.description,
-					recordStatus: res.data.data.recordStatusId,
+					recordStatusId: res.data.data.recordStatusId,
 	
 					dateCreated: res.data.data.dateCreated,
 					dateModified: res.data.data.dateModified,
@@ -139,8 +139,8 @@ class RecordForm extends React.Component{
 								? <FormControl variant="outlined" style={{width: "100%"}}>
 									<InputLabel error required>Record Status</InputLabel>
 									<Select
-										value={this.state.recordStatus}
-										onChange={this.handleNewRecordStatus}
+										value={this.state.recordStatusId}
+										onChange={this.handleNewRecordStatusId}
 										label="Record Status"
 										fullWidth
 										error>
@@ -153,8 +153,8 @@ class RecordForm extends React.Component{
 								: <FormControl variant="outlined" style={{width: "100%"}}>
 									<InputLabel required>Record Status</InputLabel>
 									<Select
-										value={this.state.recordStatus}
-										onChange={this.handleNewRecordStatus}
+										value={this.state.recordStatuIds}
+										onChange={this.handleNewRecordStatusId}
 										label="Record Status"
 										fullWidth>
 										{this.state.recordStatusValues.map((value) => (
