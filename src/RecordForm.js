@@ -52,7 +52,7 @@ class RecordForm extends React.Component{
 			|| this.state.description === ""
 			|| this.state.recordStatus === "")){
 			let newRecord = {
-				"Id": "0",									// Hardcoded ID = 0 tells API to add new record
+				"Id": this.state.id,									// ID = 0 tells API to add new record; add/edit if ID != 0
 				"ScreenName": this.state.screenName,
 				"Description": this.state.description,
 				"RecordStatusId": this.state.recordStatus,
@@ -86,7 +86,7 @@ class RecordForm extends React.Component{
 				this.setState({recordStatusValues: res.data.data})
 			})
 
-		// If editing existing record, get record details for props.id from API
+		// If editing existing record, get existing record details for props.id from API
 		if(this.props.location.state.id !== 0){
 			axios.get(GET_RECORD_BY_ID_URL + this.props.location.state.id)
 			.then(res => {
@@ -106,8 +106,7 @@ class RecordForm extends React.Component{
 	}
 
 	render(){
-		// TODO use GetUserBySupportId API to fill in the default values when editing
-		
+		// Redirect on save
 		if(this.state.error === false)
 			return <Redirect to="/"/>
 		
@@ -115,10 +114,10 @@ class RecordForm extends React.Component{
 			<div>
 				{/* ID field; only show if id != 0 (ie. Adding new record) */}
 				{(this.state.id !== 0)
-				?(	<div className="inputContainer">
-						<TextField label="ID" variant="filled" disabled fullWidth value={this.state.id}/>
-					</div>
-				)
+					?(	<div className="inputContainer">
+							<TextField label="ID" variant="filled" disabled fullWidth value={this.state.id}/>
+						</div>
+					)
 				: <></> }
 
 
@@ -186,27 +185,10 @@ class RecordForm extends React.Component{
 						</div>
 					)
 					: <></> }
-
 				
 
 
-
-
-
-
-
-
-				
-				
-
-
-
-
-
-
-
-
-				
+				{/* Buttons for all forms */}
 				<ul className="buttonContainer">
 					<li><Link to="/">
 						<Button variant="contained" color="secondary">BACK</Button>
