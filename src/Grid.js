@@ -6,6 +6,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import CreateIcon from '@material-ui/icons/Create';
 import Button from "@material-ui/core/Button";
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import Select from "@material-ui/core/Select";
+import MenuItem from '@material-ui/core/MenuItem'
 import { TablePagination } from "@material-ui/core";
 
 import Controls from "./Controls";
@@ -14,6 +17,7 @@ import axios from "axios";
 const GET_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/";
 const DELETE_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/DeleteUserSupport/";
 const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
+const GET_RECORD_STATUS_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetRecordStatusListForUsers/";
 
 class Grid extends React.Component{
 	state = {
@@ -23,10 +27,18 @@ class Grid extends React.Component{
 		totalNumRecords: 0,
 		numRecordsPerPage: 20,
 		pageNumber: 1,
+
+		recordStatusValues: [],
 	};
 
-	// Populate grid values from API call
 	componentDidMount(){
+		// API: GetRecordStatusListForUsers
+		axios.get(GET_RECORD_STATUS_URL)
+		.then(res => {
+			this.setState({recordStatusValues: res.data.data})
+		})
+
+		// Populate grid values from API call
 		axios.get(this.generateUrl())
 		.then(res => {
 			this.setState({totalNumRecords: parseInt(res.data.message)});	
@@ -63,6 +75,8 @@ class Grid extends React.Component{
 						dateModified: record.dateModified,
 						createdBy: record.createdBy,
 						modifiedBy: record.modifiedBy,
+
+						recordStatusValues: this.state.recordStatusValues,
 					});
 				})
 		
@@ -145,6 +159,8 @@ class Grid extends React.Component{
 					dateModified: record.dateModified,
 					createdBy: record.createdBy,
 					modifiedBy: record.modifiedBy,
+
+					recordStatusValues: record.recordStatusValues,
 				})
 			}
 			else
@@ -172,6 +188,8 @@ class Grid extends React.Component{
 					dateModified: record.dateModified,
 					createdBy: record.createdBy,
 					modifiedBy: record.modifiedBy,
+
+					recordStatusValues: record.recordStatusValues,
 				})
 			}
 			else
@@ -201,6 +219,8 @@ class Grid extends React.Component{
 						dateModified: record.dateModified,
 						createdBy: record.createdBy,
 						modifiedBy: record.modifiedBy,
+
+						recordStatusValues: record.recordStatusValues,
 				})
 			}
 			else{
@@ -250,6 +270,7 @@ class Grid extends React.Component{
 						handleCheck={this.handleCheck}
 						handleScreenNameChange={this.handleScreenNameChange}
 						handleDescriptionChange={this.handleDescriptionChange}
+						recordStatusValues={this.state.recordStatusValues}
 				/>
 				</table>
 				<GridPagination
@@ -311,6 +332,8 @@ class RecordList extends React.Component{
 					onCheckChange={this.props.handleCheck}
 					onScreenNameChange={this.props.handleScreenNameChange}
 					onDescriptionChange={this.props.handleDescriptionChange}
+
+					recordStatusValues={this.props.recordStatusValues}
 				/>
 			)
 		})
@@ -330,6 +353,20 @@ RecordList.propTypes = {
 
 
 class RecordItem extends React.Component{
+	state = {
+		recordStatusName: "",
+	}
+
+	componentDidMount(){
+		// Convert prop.recordStatusId into the corresponding name
+		let id = this.props.recordStatusId
+		this.props.recordStatusValues.forEach((value) => {
+			if(value.id === id){
+				this.setState({recordStatusName: value.name})
+			}
+		})
+	}
+
 	render(){
 		const handleCheckClick = () => {
 			this.props.onCheckChange(this);
@@ -374,8 +411,17 @@ class RecordItem extends React.Component{
 						defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
 				{this.props.editMode
-					? <td><TextField variant="filled" defaultValue={this.props.recordStatusId}/></td>
-					: <td>{this.props.recordStatusId}</td>}
+					? <td>{	<FormControl variant="filled" style={{width: "100%"}}>
+								<Select
+									value={this.props.recordStatusId}
+									fullWidth>
+									{this.props.recordStatusValues.map((value) => (
+										<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
+										))}
+								</Select>
+							</FormControl>
+							} </td>
+					: <td>{this.state.recordStatusName}</td>}
 				<td>{this.props.dateCreated}</td>
 				<td>{this.props.dateModified}</td>
 				<td>{this.props.createdBy}</td>
