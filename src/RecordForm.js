@@ -46,7 +46,6 @@ class RecordForm extends React.Component{
 
 	// Creates new record and submits it via API
 	handleSaveClick = (event) => {
-		
 		// Error checking for filled out form
 		if(!(this.state.screenName === ""
 			|| this.state.description === ""

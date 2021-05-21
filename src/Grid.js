@@ -13,6 +13,7 @@ import Controls from "./Controls";
 import axios from "axios";
 const GET_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/GetUsersSupport/";
 const DELETE_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/DeleteUserSupport/";
+const POST_URL = "https://bimiscwebapi-test.azurewebsites.net/api/users/SaveUserSupport/";
 
 class Grid extends React.Component{
 	state = {
@@ -52,11 +53,12 @@ class Grid extends React.Component{
 					newState = newState.concat({
 						key: record.id,
 						isSelected: false,
+						edited: false,
 						id: record.id,
 						userId: record.userId,
 						screenName: record.screenName,
 						description: record.description,
-						recordStatus: record.recordStatus,
+						recordStatusId: record.recordStatusId,
 						dateCreated: record.dateCreated,
 						dateModified: record.dateModified,
 						createdBy: record.createdBy,
@@ -94,12 +96,33 @@ class Grid extends React.Component{
 		this.setState({records: newState, deleteMode: false});		// Once deleted, disable button again
 	}
 
-	// Toggles editMode state variable
+	
+	// TODO TextFields every onChange updates the state; slow input!
 	handleEditClick = () => {
-		var toggle = !this.state.editMode;
+		var toggle = !this.state.editMode;		// Toggles editMode state variable
 
-		// TODO TextFields every onChange updates the state; slow input!
-		// TODO save using API
+		
+		// Edit all changed records via API
+		this.state.records.forEach((record) => {
+			if(record.edited){
+				let editedRecord = {
+					"Id": record.id,
+					"ScreenName": record.screenName,
+					"Description": record.description,
+					"RecordStatusId": record.recordStatusId,
+					"ModifiedBy": "1",			// TODO Hardcoded
+				}
+
+				let config = {
+					"Content-Type": 'application/json',
+					"Accept": 'application/json',
+				}
+
+				console.log("Attempting to POST")
+				console.log(editedRecord)
+				axios.post(POST_URL, editedRecord, config)
+			}
+		})
 
 		this.setState({editMode: toggle})
 	}
@@ -111,16 +134,17 @@ class Grid extends React.Component{
 			if(record.id === id){
 				newRecords = newRecords.concat({
 					key: record.id,
-						isSelected: record.isSelected,
-						id: record.id,
-						userId: record.userId,
-						screenName: value.target.value,		// New ScreenName
-						description: record.description,
-						recordStatus: record.recordStatus,
-						dateCreated: record.dateCreated,
-						dateModified: record.dateModified,
-						createdBy: record.createdBy,
-						modifiedBy: record.modifiedBy,
+					isSelected: record.isSelected,
+					edited: true,
+					id: record.id,
+					userId: record.userId,
+					screenName: value.target.value,		// New ScreenName
+					description: record.description,
+					recordStatusId: record.recordStatusId,
+					dateCreated: record.dateCreated,
+					dateModified: record.dateModified,
+					createdBy: record.createdBy,
+					modifiedBy: record.modifiedBy,
 				})
 			}
 			else
@@ -137,16 +161,17 @@ class Grid extends React.Component{
 			if(record.id === id){
 				newRecords = newRecords.concat({
 					key: record.id,
-						isSelected: record.isSelected,
-						id: record.id,
-						userId: record.userId,
-						screenName: record.screenName,
-						description: value.target.value,		// New Description
-						recordStatus: record.recordStatus,
-						dateCreated: record.dateCreated,
-						dateModified: record.dateModified,
-						createdBy: record.createdBy,
-						modifiedBy: record.modifiedBy,
+					isSelected: record.isSelected,
+					edited: true,
+					id: record.id,
+					userId: record.userId,
+					screenName: record.screenName,
+					description: value.target.value,		// New Description
+					recordStatusId: record.recordStatusId,
+					dateCreated: record.dateCreated,
+					dateModified: record.dateModified,
+					createdBy: record.createdBy,
+					modifiedBy: record.modifiedBy,
 				})
 			}
 			else
@@ -264,7 +289,6 @@ class GridHeader extends React.Component{
 
 
 
-
 class RecordList extends React.Component{
 	render(){
 		const records = this.props.records.map((record) => {
@@ -272,11 +296,12 @@ class RecordList extends React.Component{
 				<RecordItem
 					key={record.key}
 					isSelected={record.isSelected}
+					edited={record.edited}
 					id={record.id}
 					userId={record.userId}
 					screenName={record.screenName}
 					description={record.description}
-					recordStatus={record.recordStatus}
+					recordStatusId={record.recordStatusId}
 					dateCreated={record.dateCreated}
 					dateModified={record.dateModified}
 					createdBy={record.createdBy}
@@ -349,8 +374,8 @@ class RecordItem extends React.Component{
 						defaultValue={this.props.description}/></td>
 					: <td>{this.props.description}</td>}
 				{this.props.editMode
-					? <td><TextField variant="filled" defaultValue={this.props.recordStatus}/></td>
-					: <td>{this.props.recordStatus}</td>}
+					? <td><TextField variant="filled" defaultValue={this.props.recordStatusId}/></td>
+					: <td>{this.props.recordStatusId}</td>}
 				<td>{this.props.dateCreated}</td>
 				<td>{this.props.dateModified}</td>
 				<td>{this.props.createdBy}</td>
@@ -362,6 +387,7 @@ class RecordItem extends React.Component{
 RecordItem.propTypes = {
 	isSelected: PropTypes.bool
 }
+
 
 
 function GridPagination(props){
