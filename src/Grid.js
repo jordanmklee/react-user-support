@@ -115,7 +115,6 @@ class Grid extends React.Component{
 	handleEditClick = () => {
 		var toggle = !this.state.editMode;		// Toggles editMode state variable
 
-		
 		// Edit all changed records via API
 		this.state.records.forEach((record) => {
 			if(record.edited){
@@ -199,6 +198,34 @@ class Grid extends React.Component{
 		this.setState({records: newRecords});
 	}
 
+	handleRecordStatusChange = (id, value) => {
+		let newRecords = [];
+		this.state.records.forEach(record => {
+			if(record.id === id){
+				newRecords = newRecords.concat({
+					key: record.id,
+					isSelected: record.isSelected,
+					edited: true,
+					id: record.id,
+					userId: record.userId,
+					screenName: record.screenName,
+					description: record.description,
+					recordStatusId: value.target.value,		// New record status
+					dateCreated: record.dateCreated,
+					dateModified: record.dateModified,
+					createdBy: record.createdBy,
+					modifiedBy: record.modifiedBy,
+
+					recordStatusValues: record.recordStatusValues,
+				})
+			}
+			else
+				newRecords = newRecords.concat(record)
+		})
+
+		this.setState({records: newRecords});
+	}
+
 	// Updates isChecked for de/selected RecordItems
 	handleCheck = (item) => {
 		var newStateRecords = [];
@@ -214,7 +241,7 @@ class Grid extends React.Component{
 						userId: record.userId,
 						screenName: record.screenName,
 						description: record.description,
-						recordStatus: record.recordStatus,
+						recordStatusId: record.recordStatusId,
 						dateCreated: record.dateCreated,
 						dateModified: record.dateModified,
 						createdBy: record.createdBy,
@@ -270,6 +297,7 @@ class Grid extends React.Component{
 						handleCheck={this.handleCheck}
 						handleScreenNameChange={this.handleScreenNameChange}
 						handleDescriptionChange={this.handleDescriptionChange}
+						handleRecordStatusChange={this.handleRecordStatusChange}
 						recordStatusValues={this.state.recordStatusValues}
 				/>
 				</table>
@@ -332,6 +360,7 @@ class RecordList extends React.Component{
 					onCheckChange={this.props.handleCheck}
 					onScreenNameChange={this.props.handleScreenNameChange}
 					onDescriptionChange={this.props.handleDescriptionChange}
+					onRecordStatusChange={this.props.handleRecordStatusChange}
 
 					recordStatusValues={this.props.recordStatusValues}
 				/>
@@ -353,18 +382,14 @@ RecordList.propTypes = {
 
 
 class RecordItem extends React.Component{
-	state = {
-		recordStatusName: "",
-	}
-
-	componentDidMount(){
-		// Convert prop.recordStatusId into the corresponding name
-		let id = this.props.recordStatusId
+	getRecordStatusName(id){
+		var name = ""
 		this.props.recordStatusValues.forEach((value) => {
 			if(value.id === id){
-				this.setState({recordStatusName: value.name})
+				name = value.name
 			}
 		})
+		return <td>{name}</td>
 	}
 
 	render(){
@@ -378,6 +403,10 @@ class RecordItem extends React.Component{
 
 		const handleDescriptionChange = (value) => {
 			this.props.onDescriptionChange(this.props.id, value);
+		}
+
+		const handleRecordStatusChange = (value) => {
+			this.props.onRecordStatusChange(this.props.id, value);
 		}
 
 		return(
@@ -414,6 +443,7 @@ class RecordItem extends React.Component{
 					? <td>{	<FormControl variant="filled" style={{width: "100%"}}>
 								<Select
 									value={this.props.recordStatusId}
+									onChange={handleRecordStatusChange}
 									fullWidth>
 									{this.props.recordStatusValues.map((value) => (
 										<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
@@ -421,7 +451,7 @@ class RecordItem extends React.Component{
 								</Select>
 							</FormControl>
 							} </td>
-					: <td>{this.state.recordStatusName}</td>}
+					: this.getRecordStatusName(this.props.recordStatusId)}
 				<td>{this.props.dateCreated}</td>
 				<td>{this.props.dateModified}</td>
 				<td>{this.props.createdBy}</td>
