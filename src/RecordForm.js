@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom";
+import { Redirect } from 'react-router'
 
 import TextField from '@material-ui/core/TextField';
 import InputLabel from "@material-ui/core/InputLabel";
@@ -18,7 +19,7 @@ class ReactForm extends React.Component{
 		screenName: "",
 		description: "",
 		recordStatus: "",
-		error: false,
+		error: null,
 		recordStatusValues: [],
 	}
 
@@ -41,8 +42,6 @@ class ReactForm extends React.Component{
 		if(!(this.state.screenName === ""
 			|| this.state.description === ""
 			|| this.state.recordStatus === "")){
-			this.setState({error: false});
-				
 			let newRecord = {
 				"Id": "0",									// Hardcoded ID = 0 tells API to add new record
 				"ScreenName": this.state.screenName,
@@ -56,12 +55,12 @@ class ReactForm extends React.Component{
 				"Accept": 'application/json',
 			}
 	
+			// Add new record to API and redirect to grid view
 			axios.post(POST_URL, newRecord, config)
-				.then(res => {
-					console.log(res.data);
+				.then(() =>{
+					console.log("[SUCCESS] Added!")
+					this.setState({error: false})
 				})
-			
-			// TODO redirect on success
 		}
 		else{
 			console.log("Fill out the form before submitting!");
@@ -81,6 +80,9 @@ class ReactForm extends React.Component{
 	render(){
 		// TODO use GetUserBySupportId API to fill in the default values when editing
 
+		if(this.state.error === false)
+			return <Redirect to="/"/>
+		
 		return(
 			<div className="editContainer">
 				<h2>{this.props.title}</h2>
