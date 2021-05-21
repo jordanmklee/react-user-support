@@ -4,7 +4,10 @@ import RecordForm from "./RecordForm";
 class Add extends React.Component{
 	render(){
 		return(
-			<RecordForm title="Add New Record"/>
+			<div className="editContainer">
+				<h1>Add New Record</h1>
+				<RecordForm/>
+			</div>
 		)
 	}
 }

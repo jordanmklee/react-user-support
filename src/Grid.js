@@ -328,7 +328,10 @@ class RecordItem extends React.Component{
 				</td> 
 				<td>
 					{!this.props.editMode
-					? <Link to="/edit">
+					? <Link to={{
+						pathname: "/edit",
+						state: { id: this.props.id }
+						}}>
 						<Button variant="outlined" color="primary">
 							<CreateIcon fontSize="small"/>
 						</Button>

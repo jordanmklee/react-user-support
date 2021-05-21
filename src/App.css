@@ -87,6 +87,12 @@ div.editContainer{
 	margin: auto;
 }
 
+div.formComtainer{
+	padding: 10px;
+	width: 400px;
+	margin: auto;
+}
+
 div.inputContainer{
 	padding-left: 20px;
 	padding-right: 20px;

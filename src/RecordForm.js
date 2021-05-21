@@ -84,50 +84,51 @@ class ReactForm extends React.Component{
 			return <Redirect to="/"/>
 		
 		return(
-			<div className="editContainer">
-				<h2>{this.props.title}</h2>
-
+			<div className="formContainer">
 				<div className="inputContainer">
 					{this.state.error
-						? <TextField label="Screen Name" variant="filled" error helperText="Required" required fullWidth onChange={this.handleNewScreenName}/>
-						: <TextField label="Screen Name" variant="filled" required fullWidth onChange={this.handleNewScreenName}/>}
+						? <TextField label="Screen Name" variant="outlined" error helperText="Required" required fullWidth onChange={this.handleNewScreenName}/>
+						: <TextField label="Screen Name" variant="outlined" required fullWidth onChange={this.handleNewScreenName}/>}
 				</div>
 				
 				<div className="inputContainer">
 					{this.state.error
-						? <TextField label="Description" variant="filled" error helperText="Required" required fullWidth onChange={this.handleNewDescription}/>
-						: <TextField label="Description" variant="filled" required fullWidth onChange={this.handleNewDescription}/>}
+						? <TextField label="Description" variant="outlined" error helperText="Required" required fullWidth onChange={this.handleNewDescription}/>
+						: <TextField label="Description" variant="outlined" required fullWidth onChange={this.handleNewDescription}/>}
 				</div>
 				
-				<div className="inputContainer" style={{paddingLeft: "35px", paddingRight: "35px"}}>
+				<div className="inputContainer" >
 					{this.state.error
-						? <FormControl style={{width: "100%"}}>
+						? <FormControl variant="outlined" style={{width: "100%"}}>
 							<InputLabel error required>Record Status</InputLabel>
 							<Select
 								value={this.state.recordStatus}
 								onChange={this.handleNewRecordStatus}
+								label="Record Status"
 								fullWidth
 								error>
-								<MenuItem value={1}>New</MenuItem>
-								<MenuItem value={2}>Visible</MenuItem>
-								<MenuItem value={3}>Not Visible</MenuItem>
+								{this.state.recordStatusValues.map((value) => (
+									<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
+								))}
 							</Select>
 							<FormHelperText error>Required</FormHelperText>
 						</FormControl>
-						: <FormControl style={{width: "100%"}}>
+						: <FormControl variant="outlined" style={{width: "100%"}}>
 							<InputLabel required>Record Status</InputLabel>
 							<Select
 								value={this.state.recordStatus}
 								onChange={this.handleNewRecordStatus}
+								label="Record Status"
 								fullWidth>
-									{this.state.recordStatusValues.map((value) => (
-										<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
-									))}
+								{this.state.recordStatusValues.map((value) => (
+									<MenuItem key={value.id} value={value.id}>{value.name}</MenuItem>
+								))}
 							</Select>
 						</FormControl>}
-					
 				</div>
 
+				{this.props.recordDetails}
+				
 				<ul className="buttonContainer">
 					<li><Link to="/">
 						<Button variant="contained" color="secondary">BACK</Button>
