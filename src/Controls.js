@@ -17,7 +17,10 @@ class Controls extends React.Component{
 				<ul className="buttonContainer" style={{float:"right"}}>
 					<li>
 						{!this.props.editMode
-						? <Link to="/add">
+						? <Link to={{
+							pathname: "/add",
+							state: { id: 0 }
+							}}>
 							<Button variant="contained" color="primary">
 								ADD
 							</Button>
