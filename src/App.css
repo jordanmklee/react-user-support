@@ -79,10 +79,10 @@ ul.buttonContainer li{
 
 
 
-div.editContainer{
+div.formContainer{
 	border: 1px solid #a6a6a6;
 	border-radius: 30px;
-	padding: 10px;
+	padding-top: 30px;
 	width: 400px;
 	margin: auto;
 }

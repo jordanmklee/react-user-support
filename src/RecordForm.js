@@ -110,7 +110,12 @@ class RecordForm extends React.Component{
 			return <Redirect to="/"/>
 		
 		return(
-			<div>
+			<div className="formContainer">
+				{(this.state.id !== 0)
+					?(	<h2>Edit Record</h2>)
+					:(	<h2>Add New Record</h2>)}
+
+
 				{/* ID field; only show if id != 0 (ie. Adding new record) */}
 				{(this.state.id !== 0)
 					?(	<div className="inputContainer">
