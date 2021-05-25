@@ -92,8 +92,6 @@ class Grid extends React.Component{
 	// Deletes all selected RecordItems
 	handleDeleteClick = () => {
 		// Get list of IDs to delete
-		// TODO delete the array deleteIds, just do everything on API and re-render
-		// (this will solve the pagination item count not updating on delete)
 		var deleteIds = [];
 		this.state.records.forEach(record => {
 			if(record.isSelected){
@@ -101,13 +99,14 @@ class Grid extends React.Component{
 
 				// Delete using API
 				axios.delete(DELETE_URL + record.id + "/" + record.userId)
-					.then(res => { console.log(res); })		// TODO delete printout
 			}
 		})
 
 		// Create new state by filtering the IDs to delete from prev state
 		var newState = this.state.records.filter(e => !deleteIds.includes(e.id));
-		this.setState({records: newState, deleteMode: false});		// Once deleted, disable button again
+		this.setState({	records: newState,
+						totalNumRecords: newState.length,
+						deleteMode: false	});		// Once deleted, disable button again
 	}
 
 	

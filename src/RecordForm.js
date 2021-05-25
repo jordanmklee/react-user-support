@@ -51,11 +51,11 @@ class RecordForm extends React.Component{
 			|| this.state.description === ""
 			|| this.state.recordStatusId === "")){
 			let newRecord = {
-				"Id": this.state.id,									// ID = 0 tells API to add new record; add/edit if ID != 0
+				"Id": this.state.id,							// ID = 0 tells API to add new record; edit if ID != 0
 				"ScreenName": this.state.screenName,
 				"Description": this.state.description,
 				"RecordStatusId": this.state.recordStatusId,
-				"ModifiedBy": "1",							// TODO Hardcoded 1 = Michael Jackson
+				"ModifiedBy": "1",								// TODO Hardcoded 1 = Michael Jackson
 			}
 	
 			let config = {
@@ -111,9 +111,11 @@ class RecordForm extends React.Component{
 		
 		return(
 			<div className="formContainer">
+				{/* Form title */}
 				{(this.state.id !== 0)
 					?(	<h2>Edit Record</h2>)
 					:(	<h2>Add New Record</h2>)}
+
 
 
 				{/* ID field; only show if id != 0 (ie. Adding new record) */}
