@@ -158,7 +158,7 @@ class RecordForm extends React.Component{
 								: <FormControl variant="outlined" style={{width: "100%"}}>
 									<InputLabel required>Record Status</InputLabel>
 									<Select
-										value={this.state.recordStatusIds}
+										value={this.state.recordStatusId}
 										onChange={this.handleNewRecordStatusId}
 										label="Record Status"
 										fullWidth>
